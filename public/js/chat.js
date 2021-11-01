@@ -1,26 +1,15 @@
 let socket = io();
+function scrollToBottom() {
+  let messages = document.querySelector("#messages").lastElementChild;
+  messages.scrollIntoView();
+}
+
 socket.on("connect", function () {
   console.log("connected to server");
 });
 
 socket.on("disconnect", function () {
   console.log("disconnected from server");
-});
-
-socket.on("newLocationMessage", function (message) {
-  const formattedTime = moment(message.createdAt).format("LT");
-  const template = document.querySelector("#location-message-template").innerHTML;
-  console.log("newLocationMessage", message);
-  const html = Mustache.render(template, {
-    from: message.from,
-    url: message.url,
-    createdAt: formattedTime,
-  });
-
-  const div = document.createElement("div");
-  div.innerHTML = html;
-
-  document.querySelector("#messages").appendChild(div);
 });
 
 socket.on("newMessage", function (message) {
@@ -36,6 +25,26 @@ socket.on("newMessage", function (message) {
   div.innerHTML = html;
 
   document.querySelector("#messages").appendChild(div);
+  scrollToBottom();
+});
+
+socket.on("newLocationMessage", function (message) {
+  const formattedTime = moment(message.createdAt).format("LT");
+  console.log("newLocationMessage", message);
+  const template = document.querySelector(
+    "#location-message-template"
+  ).innerHTML;
+  console.log("newLocationMessage", message);
+  const html = Mustache.render(template, {
+    from: message.from,
+    url: message.url,
+    createdAt: formattedTime,
+  });
+
+  const div = document.createElement("div");
+  div.innerHTML = html;
+
+  document.querySelector("#messages").appendChild(div);
 });
 
 document.querySelector("#submit-btn").addEventListener("click", function (e) {
@@ -44,7 +53,7 @@ document.querySelector("#submit-btn").addEventListener("click", function (e) {
   socket.emit(
     "createMessage",
     {
-      from: "user",
+      from: "User",
       text: document.querySelector('input[name = "message"]').value,
     },
     function () {

@@ -170,7 +170,9 @@ button:disabled {
 .chat__footer {
   display: flex;
   flex-shrink: 0;
-  
+  position: fixed;
+  bottom: 0;
+  min-width: 85%;
 }
 .chat__footer form {
   flex-grow: 1;
@@ -207,7 +209,6 @@ button:disabled {
   }
   .chat__footer {
     flex-direction: column;
-    ;
   }
   .chat__footer form {
     margin-bottom: 10px;
